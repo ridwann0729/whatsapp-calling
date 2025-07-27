@@ -101,7 +101,7 @@ This setup clearly demonstrates how to use WhatsApp Cloud Calling API along with
 
 ## WhatsApp Calling API Integration
 
-This app uses WhatsApp Cloud API's `/calls` endpoint to:
+This app uses WhatsApp Cloud API's `/call-events` endpoint to:
 
 * Handle `pre-accept` and `accept` actions
 * Exchange SDP between WhatsApp and the browser
