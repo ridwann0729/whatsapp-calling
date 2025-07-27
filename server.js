@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
         console.log("Received SDP offer from browser.");
         browserOfferSdp = sdp;
         browserSocket = socket;
-        await maybeStartWebRTC();
+        await initiateWebRTCBridge();
     });
 
     // ICE candidate from browser
@@ -101,7 +101,7 @@ app.post("/call-events", async (req, res) => {
             console.log(`Incoming WhatsApp call from ${callerName} (${callerNumber})`);
             io.emit("call-is-coming", { callId, callerName, callerNumber });
 
-            await maybeStartWebRTC();
+            await initiateWebRTCBridge();
 
         } else if (call.event === "terminate") {
             console.log(`WhatsApp call terminated. Call ID: ${callId}`);
@@ -125,7 +125,7 @@ app.post("/call-events", async (req, res) => {
 /**
  * Initiates WebRTC between browser and WhatsApp once both SDP offers are received.
  */
-async function maybeStartWebRTC() {
+async function initiateWebRTCBridge() {
     if (!browserOfferSdp || !whatsappOfferSdp || !browserSocket) return;
 
     // --- Setup browser peer connection ---
