@@ -14,7 +14,7 @@ const {
 // STUN server allows each peer to discover its public IP for NAT traversal
 const ICE_SERVERS = [{ urls: "stun:stun.relay.metered.ca:80" }];
 
-const WHATSAPP_API_URL = `https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER_ID}/calls`;
+const WHATSAPP_API_URL = `https://graph.facebook.com/v23.0/${process.env.PHONE_NUMBER_ID}/calls`;
 const ACCESS_TOKEN = `Bearer ${process.env.ACCESS_TOKEN}`;
 
 const app = express();
@@ -119,6 +119,21 @@ app.post("/call-events", async (req, res) => {
     } catch (err) {
         console.error("Error processing /call-events webhook:", err);
         res.sendStatus(500);
+    }
+});
+
+app.get("/call-events", (req, res) => {
+    const VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN;
+
+    const mode = req.query["hub.mode"];
+    const token = req.query["hub.verify_token"];
+    const challenge = req.query["hub.challenge"];
+
+    if (mode === "subscribe" && token === VERIFY_TOKEN) {
+        console.log("Webhook verified successfully!");
+        res.status(200).send(challenge);
+    } else {
+        res.sendStatus(403);
     }
 });
 
